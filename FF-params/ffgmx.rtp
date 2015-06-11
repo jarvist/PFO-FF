@@ -1,0 +1,459 @@
+[ bondedtypes ]
+; Col 1: Type of bond
+; Col 2: Type of angles
+; Col 3: Type of proper dihedrals
+; Col 4: Type of improper dihedrals
+; Col 5: Generate all dihedrals if 1, only heavy atoms if 0.
+; Col 6: Number of excluded neighbors for nonbonded interactions
+; Col 7: Generate 1,4 interactions between pairs of hydrogens if 1
+; Col 8: Remove propers over the same bond as an improper if it is 1
+; bonds angles dihedrals impropers all_dihedrals nrexcl HH14 RemoveDih
+     1 1 3 2 0 3 0 1
+[ PF8 ]
+ [ atoms ]
+; Sinister (left side) benzene ring
+ CS1 CBC -0.0740 1 ; Poly-Bonding carbon on left ring
+ CS2 CBH -0.2231 1
+ HS2 H +0.1353 1
+ CS3 CBC +0.1800 1 ;Carbon which links to Spiro
+ CS4 CBC -0.0250 1 ;Carbon which links to other benzene
+ CS5 CBH -0.1200 1
+ HS5 H +0.1250 1
+ CS6 CBH -0.1200 1
+ HS6 H +0.1218 1
+;Dextrous (right side) benzene ring
+ CD1 CBC +0.0000 1 ;-0.0740 2 ;Poly-Bonding carbon on right ring
+ CD2 CBH -0.2231 2
+ HD2 H +0.1353 2
+ CD3 CBC +0.1800 2 ;Carbon which links to Spiro
+ CD4 CBC -0.0250 2 ;Carbon which links to other benzene
+ CD5 CBH -0.1200 2
+ HD5 H +0.1250 2
+ CD6 CBH -0.1200 2
+ HD6 H +0.1218 2
+;Spiro link - NeoPentane core carbon
+ CN CBC -0.074 3 ;+0.1400 3
+;Upper United-Carbon F8 chain
+ CU1 CH2 +0.0000 1 ; -0.0700 3 ;United atom aliphatic CH2
+ CU2 CH2 +0.000 4
+ CU3 CH2 +0.000 5
+ CU4 CH2 +0.000 6
+ CU5 CH2 +0.000 7
+ CU6 CH2 +0.000 8
+ CU7 CH2 +0.000 9
+ CU8 CH3 +0.000 10 ;united atom long alkyl CH3 terminator
+;Lower United-Carbon F8 chain
+ CL1 CH2 +0.0000 1 ; -0.0700 3 ;United atom aliphatic CH2
+ CL2 CH2 +0.000 11
+ CL3 CH2 +0.000 12
+ CL4 CH2 +0.000 13
+ CL5 CH2 +0.000 14
+ CL6 CH2 +0.000 15
+ CL7 CH2 +0.000 16
+ CL8 CH3 +0.000 17 ;united atom long alkyl CH3 terminator
+ [ bonds ]
+ ;Sinister/Left ring
+ CS1 -CD1
+ CS1 CS2
+ CS2 CS3
+ CS3 CS4
+ CS4 CS5
+ CS5 CS6
+ CS6 CS1
+ ;Hydrogens for above
+ CS2 HS2
+ CS5 HS5
+ CS6 HS6
+ ;Dextrous/Right ring
+ CD1 +CS1
+ CD1 CD2
+ CD2 CD3
+ CD3 CD4
+ CD4 CD5
+ CD5 CD6
+ CD6 CD1
+ ;Hydrogens for above
+ CD2 HD2
+ CD5 HD5
+ CD6 HD6
+; BIPHENYL INTERLINK
+ CD4 CS4
+;LINK TO SPIRO CARBON
+ CS3 CN
+ CD3 CN
+;Upper Chain
+ CN CU1
+ CU1 CU2
+ CU2 CU3
+ CU3 CU4
+ CU4 CU5
+ CU5 CU6
+ CU6 CU7
+ CU7 CU8
+
+;Lower Chain
+ CN CL1
+ CL1 CL2
+ CL2 CL3
+ CL3 CL4
+ CL4 CL5
+ CL5 CL6
+ CL6 CL7
+ CL7 CL8
+
+[ Exclusions ]
+HS6 -HD6
+; Denis A. recommendation - exclude close H's on succesive monomers as interactions too QM in nature
+HS6 -HD2
+; Done automatically by atoms being 6 hops away from each other?
+HS2 -HD2
+HS2 -HD6
+
+;CS2 CD3
+;CS2 CD4
+;CD2 CS3
+;CD2 CS4
+
+;CS6 -CD1
+;CD6 +CS1
+
+
+[ dihedrals ]
+
+ CS2 CS1 -CD1 -CD2 20.0 0.0 0.0 0.0 -20.0 0.0
+
+; Old, Pre-Mainz non-fitted version
+; CS2 CS1 -CD1 -CD2 6.9 0.0 -33.0 0.0 39.0 0.0
+
+
+
+
+; CD6 CD2 CD1 +CS1 6.9 0.0 -33.0 0.0 39.0 0.0
+
+
+[ impropers ]
+
+CS1 CS2 CS4 CS3
+CS2 CS3 CS5 CS4
+CS3 CS4 CS6 CS5
+CS4 CS5 CS1 CS6
+CS5 CS6 CS2 CS1
+CS6 CS1 CS3 CS2
+
+CD1 CD2 CD4 CD3
+CD2 CD3 CD5 CD4
+CD3 CD4 CD6 CD5
+CD4 CD5 CD1 CD6
+CD5 CD6 CD2 CD1
+CD6 CD1 CD3 CD2
+
+
+ CS1 CS3 CS2 HS2
+
+ CS2 CS4 CS3 CN ; improper to SP2 carbon
+ CS3 CS5 CS4 CD4 ; improper between rings
+
+ CS4 CS6 CS5 HS5
+ CS5 CS1 CS6 HS6
+
+; CS6 CS2 CS1 -CD1 180.0 1000.0
+;The above seems to work but requires dt~=0.1fs for MD
+
+CD6 CD2 CD1 +CS1 180.0 1000.0
+CS6 CS2 CS1 -CD1 180.0 1000.0
+
+
+; CD6 CD2 CD1 +CS1 0.0 50.0
+;Improp Diged to hold succesive monomers flat
+;First rule of seamanship: When one anchor isn't enough, use two.
+; CD5 CD3 CD1 +CS1 180.0 50.0
+; CD6 CD2 CD1 +CS4 180.0 50.0
+; CD5 CD3 CD1 +CS4 180.0 50.0
+
+; CS6 CS2 CS1 -CD1 180.0 50.0
+; CS5 CS3 CS1 -CD1 180.0 50.0
+; CS6 CS2 CS1 -CD4 180.0 50.0
+; CS5 CS3 CS1 -CD4 180.0 50.0
+
+ CD1 CD3 CD2 HD2
+ CD2 CD4 CD3 CN
+ CD3 CD5 CD4 CS4
+ CD4 CD6 CD5 HD5
+ CD5 CD1 CD6 HD6
+
+; CD6 CD2 CD1 +CS1 180.0 50.0
+;Improp Dihed to hold succesive monomers flat
+[ PF6 ]
+ [ atoms ]
+; Sinister (left side) benzene ring
+ CS1 CBC -0.0740 1 ; Poly-Bonding carbon on left ring
+ CS2 CBH -0.2231 1
+ HS2 H +0.1353 1
+ CS3 CBC +0.1800 1 ;Carbon which links to Spiro
+ CS4 CBC -0.0250 1 ;Carbon which links to other benzene
+ CS5 CBH -0.1200 1
+ HS5 H +0.1250 1
+ CS6 CBH -0.1200 1
+ HS6 H +0.1218 1
+;Dextrous (right side) benzene ring
+ CD1 CBC +0.0000 1 ;-0.0740 2 ;Poly-Bonding carbon on right ring
+ CD2 CBH -0.2231 2
+ HD2 H +0.1353 2
+ CD3 CBC +0.1800 2 ;Carbon which links to Spiro
+ CD4 CBC -0.0250 2 ;Carbon which links to other benzene
+ CD5 CBH -0.1200 2
+ HD5 H +0.1250 2
+ CD6 CBH -0.1200 2
+ HD6 H +0.1218 2
+;Spiro link - NeoPentane core carbon
+ CN CBC -0.074 3 ;+0.1400 3
+;Upper United-Carbon F8 chain
+ CU1 CH2 +0.0000 1 ; -0.0700 3 ;United atom aliphatic CH2
+ CU2 CH2 +0.000 4
+ CU3 CH2 +0.000 5
+ CU4 CH2 +0.000 6
+ CU5 CH2 +0.000 7
+ CU6 CH3 +0.000 8
+;Lower United-Carbon F8 chain
+ CL1 CH2 +0.0000 1 ; -0.0700 3 ;United atom aliphatic CH2
+ CL2 CH2 +0.000 11
+ CL3 CH2 +0.000 12
+ CL4 CH2 +0.000 13
+ CL5 CH2 +0.000 14
+ CL6 CH3 +0.000 15
+ [ bonds ]
+ ;Sinister/Left ring
+ CS1 -CD1
+ CS1 CS2
+ CS2 CS3
+ CS3 CS4
+ CS4 CS5
+ CS5 CS6
+ CS6 CS1
+ ;Hydrogens for above
+ CS2 HS2
+ CS5 HS5
+ CS6 HS6
+ ;Dextrous/Right ring
+ CD1 +CS1
+ CD1 CD2
+ CD2 CD3
+ CD3 CD4
+ CD4 CD5
+ CD5 CD6
+ CD6 CD1
+ ;Hydrogens for above
+ CD2 HD2
+ CD5 HD5
+ CD6 HD6
+; BIPHENYL INTERLINK
+ CD4 CS4
+;LINK TO SPIRO CARBON
+ CS3 CN
+ CD3 CN
+;Upper Chain
+ CN CU1
+ CU1 CU2
+ CU2 CU3
+ CU3 CU4
+ CU4 CU5
+ CU5 CU6
+;Lower Chain
+ CN CL1
+ CL1 CL2
+ CL2 CL3
+ CL3 CL4
+ CL4 CL5
+ CL5 CL6
+[ Exclusions ]
+HS6 -HD6
+; Denis A. recommendation - exclude close H's on succesive monomers as interactions too QM in nature
+HS6 -HD2
+; Done automatically by atoms being 6 hops away from each other?
+HS2 -HD2
+HS2 -HD6
+;CS2 CD3
+;CS2 CD4
+;CD2 CS3
+;CD2 CS4
+;CS6 -CD1
+;CD6 +CS1
+[ dihedrals ]
+ CS2 CS1 -CD1 -CD2 20.0 0.0 0.0 0.0 -20.0 0.0
+; Old, Pre-Mainz non-fitted version
+; CS2 CS1 -CD1 -CD2 6.9 0.0 -33.0 0.0 39.0 0.0
+; CD6 CD2 CD1 +CS1 6.9 0.0 -33.0 0.0 39.0 0.0
+[ impropers ]
+CS1 CS2 CS4 CS3
+CS2 CS3 CS5 CS4
+CS3 CS4 CS6 CS5
+CS4 CS5 CS1 CS6
+CS5 CS6 CS2 CS1
+CS6 CS1 CS3 CS2
+CD1 CD2 CD4 CD3
+CD2 CD3 CD5 CD4
+CD3 CD4 CD6 CD5
+CD4 CD5 CD1 CD6
+CD5 CD6 CD2 CD1
+CD6 CD1 CD3 CD2
+ CS1 CS3 CS2 HS2
+ CS2 CS4 CS3 CN ; improper to SP2 carbon
+ CS3 CS5 CS4 CD4 ; improper between rings
+ CS4 CS6 CS5 HS5
+ CS5 CS1 CS6 HS6
+; CS6 CS2 CS1 -CD1 180.0 1000.0
+;The above seems to work but requires dt~=0.1fs for MD
+CD6 CD2 CD1 +CS1 180.0 1000.0
+CS6 CS2 CS1 -CD1 180.0 1000.0
+; CD6 CD2 CD1 +CS1 0.0 50.0
+;Improp Diged to hold succesive monomers flat
+;First rule of seamanship: When one anchor isn't enough, use two.
+; CD5 CD3 CD1 +CS1 180.0 50.0
+; CD6 CD2 CD1 +CS4 180.0 50.0
+; CD5 CD3 CD1 +CS4 180.0 50.0
+; CS6 CS2 CS1 -CD1 180.0 50.0
+; CS5 CS3 CS1 -CD1 180.0 50.0
+; CS6 CS2 CS1 -CD4 180.0 50.0
+; CS5 CS3 CS1 -CD4 180.0 50.0
+ CD1 CD3 CD2 HD2
+ CD2 CD4 CD3 CN
+ CD3 CD5 CD4 CS4
+ CD4 CD6 CD5 HD5
+ CD5 CD1 CD6 HD6
+; CD6 CD2 CD1 +CS1 180.0 50.0
+;Improp Dihed to hold succesive monomers flat
+[ PF5 ]
+ [ atoms ]
+; Sinister (left side) benzene ring
+ CS1 CBC -0.0740 1 ; Poly-Bonding carbon on left ring
+ CS2 CBH -0.2231 1
+ HS2 H +0.1353 1
+ CS3 CBC +0.1800 1 ;Carbon which links to Spiro
+ CS4 CBC -0.0250 1 ;Carbon which links to other benzene
+ CS5 CBH -0.1200 1
+ HS5 H +0.1250 1
+ CS6 CBH -0.1200 1
+ HS6 H +0.1218 1
+;Dextrous (right side) benzene ring
+ CD1 CBC +0.0000 1 ;-0.0740 2 ;Poly-Bonding carbon on right ring
+ CD2 CBH -0.2231 2
+ HD2 H +0.1353 2
+ CD3 CBC +0.1800 2 ;Carbon which links to Spiro
+ CD4 CBC -0.0250 2 ;Carbon which links to other benzene
+ CD5 CBH -0.1200 2
+ HD5 H +0.1250 2
+ CD6 CBH -0.1200 2
+ HD6 H +0.1218 2
+;Spiro link - NeoPentane core carbon
+ CN CBC -0.074 3 ;+0.1400 3
+;Upper United-Carbon F8 chain
+ CU1 CH2 +0.0000 1 ; -0.0700 3 ;United atom aliphatic CH2
+ CU2 CH +0.000 4
+ CU3 CH3 +0.000 5
+ CU4 CH2 +0.000 6
+ CU5 CH3 +0.000 7
+;Lower United-Carbon F8 chain
+ CL1 CH2 +0.0000 1 ; -0.0700 3 ;United atom aliphatic CH2
+ CL2 CH +0.000 11
+ CL3 CH3 +0.000 12
+ CL4 CH2 +0.000 13
+ CL5 CH3 +0.000 14
+ [ bonds ]
+ ;Sinister/Left ring
+ CS1 -CD1
+ CS1 CS2
+ CS2 CS3
+ CS3 CS4
+ CS4 CS5
+ CS5 CS6
+ CS6 CS1
+ ;Hydrogens for above
+ CS2 HS2
+ CS5 HS5
+ CS6 HS6
+ ;Dextrous/Right ring
+ CD1 +CS1
+ CD1 CD2
+ CD2 CD3
+ CD3 CD4
+ CD4 CD5
+ CD5 CD6
+ CD6 CD1
+ ;Hydrogens for above
+ CD2 HD2
+ CD5 HD5
+ CD6 HD6
+; BIPHENYL INTERLINK
+ CD4 CS4
+;LINK TO SPIRO CARBON
+ CS3 CN
+ CD3 CN
+;Upper Chain
+ CN CU1
+ CU1 CU2
+ CU2 CU3
+ CU2 CU4
+ CU4 CU5
+;Lower Chain
+ CN CL1
+ CL1 CL2
+ CL2 CL3
+ CL2 CL4
+ CL4 CL5
+[ Exclusions ]
+HS6 -HD6
+; Denis A. recommendation - exclude close H's on succesive monomers as interactions too QM in nature
+HS6 -HD2
+; Done automatically by atoms being 6 hops away from each other?
+HS2 -HD2
+HS2 -HD6
+;CS2 CD3
+;CS2 CD4
+;CD2 CS3
+;CD2 CS4
+;CS6 -CD1
+;CD6 +CS1
+[ dihedrals ]
+ CS2 CS1 -CD1 -CD2 20.0 0.0 0.0 0.0 -20.0 0.0
+; Old, Pre-Mainz non-fitted version
+; CS2 CS1 -CD1 -CD2 6.9 0.0 -33.0 0.0 39.0 0.0
+; CD6 CD2 CD1 +CS1 6.9 0.0 -33.0 0.0 39.0 0.0
+[ impropers ]
+CS1 CS2 CS4 CS3
+CS2 CS3 CS5 CS4
+CS3 CS4 CS6 CS5
+CS4 CS5 CS1 CS6
+CS5 CS6 CS2 CS1
+CS6 CS1 CS3 CS2
+CD1 CD2 CD4 CD3
+CD2 CD3 CD5 CD4
+CD3 CD4 CD6 CD5
+CD4 CD5 CD1 CD6
+CD5 CD6 CD2 CD1
+CD6 CD1 CD3 CD2
+ CS1 CS3 CS2 HS2
+ CS2 CS4 CS3 CN ; improper to SP2 carbon
+ CS3 CS5 CS4 CD4 ; improper between rings
+ CS4 CS6 CS5 HS5
+ CS5 CS1 CS6 HS6
+; CS6 CS2 CS1 -CD1 180.0 1000.0
+;The above seems to work but requires dt~=0.1fs for MD
+CD6 CD2 CD1 +CS1 180.0 1000.0
+CS6 CS2 CS1 -CD1 180.0 1000.0
+; CD6 CD2 CD1 +CS1 0.0 50.0
+;Improp Diged to hold succesive monomers flat
+;First rule of seamanship: When one anchor isn't enough, use two.
+; CD5 CD3 CD1 +CS1 180.0 50.0
+; CD6 CD2 CD1 +CS4 180.0 50.0
+; CD5 CD3 CD1 +CS4 180.0 50.0
+; CS6 CS2 CS1 -CD1 180.0 50.0
+; CS5 CS3 CS1 -CD1 180.0 50.0
+; CS6 CS2 CS1 -CD4 180.0 50.0
+; CS5 CS3 CS1 -CD4 180.0 50.0
+ CD1 CD3 CD2 HD2
+ CD2 CD4 CD3 CN
+ CD3 CD5 CD4 CS4
+ CD4 CD6 CD5 HD5
+ CD5 CD1 CD6 HD6
+; CD6 CD2 CD1 +CS1 180.0 50.0
+;Improp Dihed to hold succesive monomers flat
