@@ -1,0 +1,33 @@
+#
+# A mixture of water and urea
+#
+
+#Why on Earth do all bio MD tutorials start with Urine? Are they really that interested?
+
+# All the atoms from diferent molecules will be separated at least 2.0
+# Anstroms at the solution.
+
+tolerance 1.7
+
+# The file type of input and output files is PDB
+
+filetype pdb
+
+# The name of the output file
+
+output tetramer_f8f8f8f8_100.pdb
+
+#Add ter between successive molecules in output pdb file
+add_amber_ter
+
+# 1000 water molecules and 400 urea molecules will be put in a box
+# defined by the minimum coordinates x, y and z = 0. 0. 0. and maximum
+# coordinates 40. 40. 40. That is, they will be put in a cube of side
+# 40. (the keyword "inside cube 0. 0. 0. 40.") could be used as well.
+
+structure f8f8f8f8_butchered.pdb 
+  number 250
+  inside box 0. 0. 0. 115. 115. 115. 
+end structure
+
+
