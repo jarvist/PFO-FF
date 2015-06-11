@@ -1,0 +1,143 @@
+[ defaults ]
+; nbfunc        comb-rule       gen-pairs       fudgeLJ fudgeQQ
+  1             3               yes              0.0     0.0
+
+; parameters are tacken from the OPLS force field
+; see also Cinacchi, Colle, Tani J. Phys. Chem. B 108, 7971, 2004
+;
+[ atomtypes ]
+; name       mass      charge    ptype      sigma      eps
+  CB     12.01100       0.000       A       0.355     0.293
+  CBH    12.01100      -0.115       A       0.355     0.293
+  CBC    12.01100       0.000       A       0.355     0.293
+  H      1.00800        0.115       A       0.242     0.125
+  CH2    14.02700       0.000       A       0.3905    0.494
+  CH3    15.03500       0.000       A       0.3905    0.732
+  CH     13.01900       0.000       A    3.85000e-01  3.34720e-01 ; SIG
+;JMF 2009-12-03
+;taken from ffoplsaanb - also confirm that first few types are also there in opls (numbers 8-10)
+
+[ bondtypes ]
+; i    j func        b0          kb
+   CB   CB    1   0.13900     418400.
+  CBC  CBC    1   0.13900     418400. ; JMF addition 12-02-07. Interlink
+;between binphenyl rings...   
+  CBH  CBH    1   0.13900     418400. ;and again for rings
+   CB  CBH    1   0.13900     418400.
+  CBC  CH2    1   0.13900     418400.
+  CBC  CBH    1   0.13900     418400.
+  CBH    H    1   0.10800     418400.
+  CH2  CH2    1   0.15300     334720.
+  CH3  CH2    1   0.15300     334720.
+;JMF 2009-12-03 - from ffoplsabon orig; standard as above
+  CH   CH2      1    0.15220    334720.
+  CH   CH3      1    0.15220    334720.
+
+
+[ angletypes ]
+  CB   CB   CB     1   120.000     527.000
+  CB   CBH  CBC    1   120.000     527.000
+  CB   CB   CBH    1   120.000     527.000
+  CBH  CBC  CH2    1   119.700     711.280 ; opls
+  CB   CBH  H      1   120.000     292.880 ; opls
+  CBC  CBH  H      1   120.000     292.880 ; opls
+  CBH  CBC  CBH    1   120.000     527.000 ;
+  CBC  CH2  CH2    1   114.000     527.184 ; opls
+  CH2  CH2  CH2    1   109.470     502.100
+  CH3  CH2  CH2    1   109.470     502.100
+
+;JMF Additions
+  CBC  CBH  CBC    1   120.000     527.000
+  CBH  CBC  CBC    1   120.000     527.000
+  CBC  CBC  CBC    1   120.000     527.000  
+  CBC  CBH  CBH    1   120.000     527.000  
+  H    CBH  CBH    1   120.000     527.000  
+;  H    CBH  CBC    1   120.000     527.000
+  
+  CBC  CBC  CH2    1   109.500     527.000  ; Benzene C -> Sprio -> CH2 U.A.
+  CH2  CBC  CH2    1   109.500     527.000  ; Angle between aliphatic chains
+
+;JMF 2009-12-03
+ CH2  CH   CH2    1   109.470     502.100
+ CH2  CH   CH3    1   109.470     502.100
+ CBC  CH2  CH     1   109.470     502.100
+ CH3  CH2  CH	  1   109.470     502.100
+
+[ dihedraltypes ]
+; Ryckaert-Bellemans Dihedrals
+; aj ak funct
+  ; j    k func     C0       C1       C2       C3       C4       C5
+; Set incorrectly added proper digedrals to zero force constants to defeat gromacs
+; CHECK ME!
+  CB    CB    3     0.0      0.0      0.0      0.0      0.0      0.0  ;substituted by improper
+  CB    CBH   3     0.0      0.0      0.0      0.0      0.0      0.0  ;substituted by improper
+  CBC   CBH   3     0.0      0.0      0.0      0.0      0.0      0.0  ;substituted by improper
+  CBC   CBC   3     0.0      0.0      0.0      0.0      0.0      0.0  ;substituted by improper
+  CBH   CBH   3     0.0      0.0      0.0      0.0      0.0      0.0  ;substituted by improper
+
+;the important one for the aliphatic sidechains - this is all you need if you have no CH units (branched sidechains)
+  CH2   CH2   3     8.61     17.45    1.14    -27.2     0.0      0.0
+
+;2008-01-14
+;Params taken from 1984 Jorgensam isopentane. Coverted to RB params in kJ/mol as gromacs manual.
+  CH   CH2   3     9.596    -24.982	-2.241	29.033  0.0      0.0
+
+; improper dihedrals to keep the phenil rings
+  CB   CB   CB   CB      2   180.00000   167.40000
+  CB   CB   CB   CBH     2   180.00000   167.40000
+  CBH  CB   CB   CBH     2   180.00000   167.40000
+  CBC  CBH  CB   CB      2   180.00000   167.40000
+  CBC  CBH  CBH  CH2     2   180.00000   199.20000 ;ab initio data
+  
+  CBH CBC CBH CBH	2	180.000	167.40000
+  CBH CBH CBC CBH       2       180.000 167.40000
+
+
+; improper dihedrals to keep the hydrodgens flat
+  H  CBH  CB   CB      2   180.00000   167.400000
+  H    CBH  CBC  CBC     2   180.00000   167.40000
+  H    CBH  CBH  CBC     2   180.00000   167.40000
+  CBH  CBC  CBH  H       2   180.00000   167.40000
+
+;JMF additions
+  CBH  CBC  CBC  CBC     2   180.00000   167.40000 ; DiHe across sprio linking
+  CBC  CBC  CBC  CBC     2   180.00000   167.40000 ; DiHe across sprio linking
+  CBH  CBH  CBC  CBC     2   180.00000   167.40000 
+  CBC  CBH  CBC  CBC     2   180.00000   167.40000   
+  CBH  CBC  CBC  CBH     2   180.00000   167.40000 
+  CBC  CBH  CBH  CBC     2   180.00000   167.40000 
+  CBC CBH CBC CBH        2   180.00000   167.40000
+  CBH CBC CBH CBC        2   180.00000   167.40000
+  CBC CBH CBH CBH	 2   180.00000   167.40000
+
+;From Denis' HBC paper
+  CBC CBC CH2 CH2	3   8.61     17.45    1.14    -27.2     0.0    0.0  
+;duplicated for branched F5
+  CBC CBC CH2 CH       3   8.61     17.45    1.14    -27.2     0.0    0.0
+
+
+[ pairtypes ]
+;   i    j   func     cs6          cs12
+   CB   CB    1        0            0    ;
+   CB  CBH    1        0            0    ;
+   CB  CBC    1        0            0    ;
+   CB  CH2    1        0            0    ; I shall check if the non-zero
+  CBC  CBC    1        0            0    ; LJ14 potential is needed
+  CBC  CH3    1        0            0
+  CBH  CBH    1        0            0    ; for 1-4 pairs of dihedrals
+  CBH  CH2    1        0            0    ; for 1-4 pairs of dihedrals
+  CBH    H    1        0            0
+   CB    H    1        0            0
+  CBC    H    1        0            0
+  CBC  CH2    1        0            0
+  CH2  CH2    1        0            0
+  CH2  CH3    1        0            0
+  CH2    H    1        0            0
+; CBP   CB    1        0            0
+; CBP  CBH    1        0            0
+; CBP    H    1        0            0
+
+;JMF additions
+  CBH  CBH    1	       0	    0
+  CBH  CBC    1	       0	    0
+
